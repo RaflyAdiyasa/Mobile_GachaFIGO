@@ -194,7 +194,7 @@ class _GachaPageState extends State<GachaPage> {
               onPressed: _isLoading ? null : _performGacha,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Color(0xFF0D47A1),
+                backgroundColor: Color.fromARGB(255, 142, 175, 226),
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),

@@ -10,15 +10,12 @@ class SuggestionsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSection('Overall', 'Biasa'),
+            _buildSection('Overall', 'Good'),
             _buildSection(
               'Keterangan Tambahan',
-              'Hidup seperti sugab seungguh memorable dan berotak senku',
+              'Hidup seperti Flutter sungguh memorable dan berotak senku',
             ),
-            _buildSection(
-              'Saran',
-              'Jangan terlalu memaksakan, project terlalu sulit',
-            ),
+            _buildSection('Saran', 'Cih kurang menantang , hmmmpph !!'),
             Spacer(),
             Center(
               child: Text(

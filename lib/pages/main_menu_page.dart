@@ -7,6 +7,7 @@ import 'package:gachafigo/pages/gacha_page.dart';
 import 'package:gachafigo/pages/topup_page.dart';
 import 'package:gachafigo/pages/login_page.dart';
 import 'package:gachafigo/pages/suggestions_page.dart';
+import 'package:gachafigo/pages/profile_page.dart';
 
 class MainMenuPage extends StatefulWidget {
   @override
@@ -44,6 +45,27 @@ class _MainMenuPageState extends State<MainMenuPage> {
     }
   }
 
+  Widget _buildProfileAvatar() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfilePage()),
+        );
+      },
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Text(
+          _username.isNotEmpty ? _username[0].toUpperCase() : '?',
+          style: TextStyle(
+            color: Color(0xFF0D47A1),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', false);
@@ -59,12 +81,31 @@ class _MainMenuPageState extends State<MainMenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Hello $_username',
-          style: TextStyle(
-            color: const Color.fromARGB(179, 32, 5, 151),
-            fontWeight: FontWeight.bold,
-          ),
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
+              child: CircleAvatar(
+                radius: 15,
+                backgroundImage: AssetImage(
+                  'lib/assets/img/logo1.jpeg',
+                ), // gunakan sebagai avatar profile
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              'Username :  $_username',
+              style: TextStyle(
+                color: const Color.fromARGB(179, 32, 5, 151),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         backgroundColor: Color.fromARGB(179, 205, 194, 255),
         actions: [

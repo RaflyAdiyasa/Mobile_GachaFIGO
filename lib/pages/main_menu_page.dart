@@ -58,7 +58,14 @@ class _MainMenuPageState extends State<MainMenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hello $_username'),
+        title: Text(
+          'Hello $_username',
+          style: TextStyle(
+            color: const Color.fromARGB(179, 32, 5, 151),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Color.fromARGB(179, 205, 194, 255),
         actions: [
           IconButton(
             icon: Icon(Icons.account_balance_wallet),
@@ -97,14 +104,20 @@ class _MainMenuPageState extends State<MainMenuPage> {
       body: _getPage(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
+        backgroundColor: Color.fromARGB(255, 142, 175, 226), // Dark blue
+        selectedItemColor: const Color.fromARGB(255, 255, 2, 2),
+        unselectedItemColor: const Color.fromARGB(179, 32, 5, 151),
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Main Menu'),
           BottomNavigationBarItem(
             icon: Icon(Icons.collections),
             label: 'Collection',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Coming Soon'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Coming Soon'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_comment),
+            label: 'Coming Soon',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.feedback), label: 'Saran'),
         ],
         onTap: (index) {
           setState(() {
@@ -139,5 +152,52 @@ class _MainMenuPageState extends State<MainMenuPage> {
       default:
         return Center(child: Text('Coming Soon'));
     }
+  }
+
+  Widget _buildFeedbackPage() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Saran dan Kesan Mata Kuliah\nTeknologi dan Pemrograman Mobile',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          _buildFeedbackItem(title: 'Overall', content: 'Biasa'),
+          _buildFeedbackItem(
+            title: 'Keterangan Tambahan',
+            content: 'Hidup seperti sugab seungguh memorable dan berotak senku',
+          ),
+          _buildFeedbackItem(
+            title: 'Saran',
+            content: 'Jangan terlalu memaksakan, project terlalu sulit',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeedbackItem({required String title, required String content}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0D47A1),
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(content, style: TextStyle(fontSize: 16)),
+          Divider(color: Colors.grey),
+        ],
+      ),
+    );
   }
 }

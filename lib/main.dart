@@ -31,6 +31,14 @@ class MyApp extends StatelessWidget {
       title: 'GachaFigo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color.fromARGB(179, 205, 194, 255), // Dark blue
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Color.fromARGB(179, 32, 5, 151), // Dark blue
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white70,
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: FutureBuilder(

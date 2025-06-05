@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gachafigo/models/user.dart';
 import 'package:gachafigo/models/card.dart';
+import 'package:gachafigo/seeds/card_ids.dart'; // Assuming you have a separate file for card IDs
 
 class GachaPage extends StatefulWidget {
   @override
@@ -14,23 +15,7 @@ class GachaPage extends StatefulWidget {
 
 class _GachaPageState extends State<GachaPage> {
   bool _isLoading = false;
-  final List<String> _cardIds = [
-    '9400010',
-    '9400020',
-    '9400030',
-    '9400040',
-    '9400050',
-    '9406920',
-    '9406930',
-    '9406940',
-    '9307200',
-    '9406970',
-    '9406980',
-    '9406990',
-    '9307210',
-    '9307220',
-    '9307230',
-  ];
+  final List<String> _cardIds = cardIds; // Assuming cardIds is a List<String>
 
   void _showToast(String message) {
     Fluttertoast.showToast(
@@ -208,7 +193,7 @@ class _GachaPageState extends State<GachaPage> {
                       : Text('Pull Gacha (3000 Credit)'),
             ),
             SizedBox(height: 20),
-            Text('Available cards: ${_cardIds.join(', ')}'),
+            // Text('Available cards: ${_cardIds.join(', ')}'),
           ],
         ),
       ),

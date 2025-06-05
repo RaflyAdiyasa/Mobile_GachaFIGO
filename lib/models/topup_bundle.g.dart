@@ -1,44 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'topup_bundle.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserAdapter extends TypeAdapter<User> {
+class TopUpBundleAdapter extends TypeAdapter<TopUpBundle> {
   @override
-  final int typeId = 0;
+  final int typeId = 2;
 
   @override
-  User read(BinaryReader reader) {
+  TopUpBundle read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return User(
+    return TopUpBundle(
       id: fields[0] as String,
-      username: fields[1] as String,
-      password: fields[2] as String,
-      credit: fields[3] as int,
-      collection: (fields[4] as List?)?.cast<String>(),
+      credits: fields[1] as int,
+      usdPrice: fields[2] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, User obj) {
+  void write(BinaryWriter writer, TopUpBundle obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.username)
+      ..write(obj.credits)
       ..writeByte(2)
-      ..write(obj.password)
-      ..writeByte(3)
-      ..write(obj.credit)
-      ..writeByte(4)
-      ..write(obj.collection);
+      ..write(obj.usdPrice);
   }
 
   @override
@@ -47,7 +41,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserAdapter &&
+      other is TopUpBundleAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

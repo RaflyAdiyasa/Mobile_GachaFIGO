@@ -1,44 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'currency_rate.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserAdapter extends TypeAdapter<User> {
+class CurrencyRateAdapter extends TypeAdapter<CurrencyRate> {
   @override
-  final int typeId = 0;
+  final int typeId = 3;
 
   @override
-  User read(BinaryReader reader) {
+  CurrencyRate read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return User(
-      id: fields[0] as String,
-      username: fields[1] as String,
-      password: fields[2] as String,
-      credit: fields[3] as int,
-      collection: (fields[4] as List?)?.cast<String>(),
+    return CurrencyRate(
+      code: fields[0] as String,
+      marketRate: fields[1] as double,
+      buyRate: fields[2] as double,
+      sellRate: fields[3] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, User obj) {
+  void write(BinaryWriter writer, CurrencyRate obj) {
     writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.username)
-      ..writeByte(2)
-      ..write(obj.password)
-      ..writeByte(3)
-      ..write(obj.credit)
       ..writeByte(4)
-      ..write(obj.collection);
+      ..writeByte(0)
+      ..write(obj.code)
+      ..writeByte(1)
+      ..write(obj.marketRate)
+      ..writeByte(2)
+      ..write(obj.buyRate)
+      ..writeByte(3)
+      ..write(obj.sellRate);
   }
 
   @override
@@ -47,7 +44,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserAdapter &&
+      other is CurrencyRateAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

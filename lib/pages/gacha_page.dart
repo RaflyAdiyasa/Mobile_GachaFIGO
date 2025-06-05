@@ -193,12 +193,39 @@ class _GachaPageState extends State<GachaPage> {
             ElevatedButton(
               onPressed: _isLoading ? null : _performGacha,
               style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Color(0xFF0D47A1),
                 padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 5,
+                shadowColor: Colors.blue[900],
               ),
               child:
                   _isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text('Pull Gacha (3000 Credit)'),
+                      ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                      : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.auto_awesome, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'PULL GACHA (3000)',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
             ),
             SizedBox(height: 20),
             // Text('Available cards: ${_cardIds.join(', ')}'),

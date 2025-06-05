@@ -6,6 +6,7 @@ import 'package:gachafigo/pages/collection_page.dart';
 import 'package:gachafigo/pages/gacha_page.dart';
 import 'package:gachafigo/pages/topup_page.dart';
 import 'package:gachafigo/pages/login_page.dart';
+import 'package:gachafigo/pages/suggestions_page.dart';
 
 class MainMenuPage extends StatefulWidget {
   @override
@@ -149,55 +150,12 @@ class _MainMenuPageState extends State<MainMenuPage> {
         );
       case 1:
         return CollectionPage();
+      case 2:
+        return Center(child: Text('Coming Soon'));
+      case 3:
+        return SuggestionsPage();
       default:
         return Center(child: Text('Coming Soon'));
     }
-  }
-
-  Widget _buildFeedbackPage() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Saran dan Kesan Mata Kuliah\nTeknologi dan Pemrograman Mobile',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 20),
-          _buildFeedbackItem(title: 'Overall', content: 'Biasa'),
-          _buildFeedbackItem(
-            title: 'Keterangan Tambahan',
-            content: 'Hidup seperti sugab seungguh memorable dan berotak senku',
-          ),
-          _buildFeedbackItem(
-            title: 'Saran',
-            content: 'Jangan terlalu memaksakan, project terlalu sulit',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeedbackItem({required String title, required String content}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF0D47A1),
-            ),
-          ),
-          SizedBox(height: 4),
-          Text(content, style: TextStyle(fontSize: 16)),
-          Divider(color: Colors.grey),
-        ],
-      ),
-    );
   }
 }

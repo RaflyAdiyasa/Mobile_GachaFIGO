@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gachafigo/models/user.dart';
 import 'package:gachafigo/models/card.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CollectionPage extends StatefulWidget {
   @override
@@ -47,6 +48,43 @@ class _CollectionPageState extends State<CollectionPage> {
 
       setState(() {});
     }
+  }
+
+  Future<void> _deleteCard(GachaCard card) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserId = prefs.getString('currentUserId');
+
+    if (currentUserId == null) return;
+
+    final usersBox = Hive.box<User>('users');
+    final userIndex = usersBox.values.toList().indexWhere(
+      (u) => u.id == currentUserId,
+    );
+
+    if (userIndex == -1) return;
+
+    final user = usersBox.getAt(userIndex) as User;
+    final updatedCollection = List<String>.from(user.collection)
+      ..remove(card.id);
+
+    final updatedUser = User(
+      id: user.id,
+      username: user.username,
+      password: user.password,
+      credit: user.credit,
+      collection: updatedCollection,
+    );
+
+    await usersBox.putAt(userIndex, updatedUser);
+    await _loadUserCollection(); // Refresh the list
+
+    Fluttertoast.showToast(
+      msg: "Card removed from collection",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+    );
   }
 
   Color _getCardColor(int rarity) {
@@ -96,6 +134,73 @@ class _CollectionPageState extends State<CollectionPage> {
     );
   }
 
+  // void _showCardDetail(GachaCard card) {
+  //   showDialog(
+  //     context: context,
+  //     builder:
+  //         (context) => Dialog(
+  //           backgroundColor: Colors.transparent,
+  //           insetPadding: EdgeInsets.all(20),
+  //           child: Container(
+  //             decoration: _getCardDecoration(card.rarity),
+  //             padding: EdgeInsets.all(16),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 Text(
+  //                   card.name,
+  //                   style: TextStyle(
+  //                     fontSize: 20,
+  //                     fontWeight: FontWeight.bold,
+  //                     color: card.rarity >= 4 ? Colors.black : Colors.white,
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 8),
+  //                 Text(
+  //                   'Rarity: ${'★' * card.rarity}',
+  //                   style: TextStyle(
+  //                     fontSize: 16,
+  //                     color: card.rarity >= 4 ? Colors.black87 : Colors.white70,
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 16),
+  //                 Container(
+  //                   height: 300,
+  //                   width: double.infinity,
+  //                   child: ClipRRect(
+  //                     borderRadius: BorderRadius.circular(8),
+  //                     child: PhotoView(
+  //                       imageProvider: NetworkImage(card.urlImg),
+  //                       minScale: PhotoViewComputedScale.contained,
+  //                       maxScale: PhotoViewComputedScale.covered * 2,
+  //                       backgroundDecoration: BoxDecoration(
+  //                         color: Colors.transparent,
+  //                       ),
+  //                       loadingBuilder:
+  //                           (context, event) =>
+  //                               Center(child: CircularProgressIndicator()),
+  //                       errorBuilder:
+  //                           (context, error, stackTrace) =>
+  //                               Center(child: Icon(Icons.error, size: 50)),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 16),
+  //                 ElevatedButton(
+  //                   onPressed: () => Navigator.pop(context),
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor: Colors.white.withOpacity(0.8),
+  //                     foregroundColor: Colors.black,
+  //                   ),
+  //                   child: Text('Close'),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //   );
+  // }
+
   void _showCardDetail(GachaCard card) {
     showDialog(
       context: context,
@@ -138,27 +243,63 @@ class _CollectionPageState extends State<CollectionPage> {
                         backgroundDecoration: BoxDecoration(
                           color: Colors.transparent,
                         ),
-                        loadingBuilder:
-                            (context, event) =>
-                                Center(child: CircularProgressIndicator()),
-                        errorBuilder:
-                            (context, error, stackTrace) =>
-                                Center(child: Icon(Icons.error, size: 50)),
                       ),
                     ),
                   ),
                   SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.8),
-                      foregroundColor: Colors.black,
-                    ),
-                    child: Text('Close'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor: Colors.white.withOpacity(0.8),
+                        ),
+                        child: Text('Close'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _showDeleteConfirmation(card);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.red[600],
+                        ),
+                        child: Text('Delete'),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
+          ),
+    );
+  }
+
+  void _showDeleteConfirmation(GachaCard card) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Confirm Delete'),
+            content: Text(
+              'Are you sure you want to remove this card from your collection?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _deleteCard(card);
+                },
+                child: Text('Delete', style: TextStyle(color: Colors.red)),
+              ),
+            ],
           ),
     );
   }
@@ -200,31 +341,6 @@ class _CollectionPageState extends State<CollectionPage> {
                                       ? Image.network(
                                         card.urlImg,
                                         fit: BoxFit.contain,
-                                        loadingBuilder: (
-                                          context,
-                                          child,
-                                          progress,
-                                        ) {
-                                          return progress == null
-                                              ? child
-                                              : Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                        },
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
-                                          return Center(
-                                            child: Icon(
-                                              Icons.broken_image,
-                                              size: 40,
-                                              color: Colors.white70,
-                                            ),
-                                          );
-                                        },
                                       )
                                       : Center(
                                         child: Icon(

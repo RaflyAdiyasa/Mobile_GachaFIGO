@@ -232,7 +232,14 @@ class _CollectionPageState extends State<CollectionPage> {
                       color: card.rarity >= 4 ? Colors.black87 : Colors.white70,
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 5),
+                  Text(
+                    'Time: ${card.time}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: card.rarity >= 4 ? Colors.black87 : Colors.white70,
+                    ),
+                  ),
                   Container(
                     height: 300,
                     width: double.infinity,

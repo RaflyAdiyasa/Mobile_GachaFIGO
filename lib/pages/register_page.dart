@@ -52,6 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
         id: Uuid().v4(),
         username: username,
         password: _hashPassword(_passwordController.text),
+        collection: [], // Pastikan inisialisasi dengan list mutable
       );
 
       await usersBox.add(newUser);

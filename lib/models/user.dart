@@ -24,6 +24,6 @@ class User extends HiveObject {
     required this.username,
     required this.password,
     this.credit = 30000,
-    this.collection = const [],
-  });
+    List<String>? collection, // Ubah menjadi nullable parameter
+  }) : collection = collection ?? [];
 }

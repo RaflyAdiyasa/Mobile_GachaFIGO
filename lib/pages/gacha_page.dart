@@ -20,6 +20,16 @@ class _GachaPageState extends State<GachaPage> {
     '9400030',
     '9400040',
     '9400050',
+    '9406920',
+    '9406930',
+    '9406940',
+    '9307200',
+    '9406970',
+    '9406980',
+    '9406990',
+    '9307210',
+    '9307220',
+    '9307230',
   ];
 
   void _showToast(String message) {
@@ -115,8 +125,12 @@ class _GachaPageState extends State<GachaPage> {
         username: user.username,
         password: user.password,
         credit: user.credit - 3000,
-        collection: [...user.collection, randomCardId],
+        collection: List<String>.from(
+          user.collection,
+        ), // Buat copy yang mutable
       );
+
+      updatedUser.collection.add(randomCardId);
 
       final userIndex = usersBox.values.toList().indexWhere(
         (u) => u.id == user.id,

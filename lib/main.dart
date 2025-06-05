@@ -14,6 +14,13 @@ void main() async {
   await Hive.openBox<User>('users');
   await Hive.openBox<GachaCard>('cards');
 
+  try {
+    await Hive.openBox<User>('users');
+  } catch (e) {
+    await Hive.deleteBoxFromDisk('users');
+    await Hive.openBox<User>('users');
+  }
+
   runApp(MyApp());
 }
 

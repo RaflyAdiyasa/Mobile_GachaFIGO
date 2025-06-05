@@ -6,7 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gachafigo/models/user.dart';
 import 'package:gachafigo/models/card.dart';
-import 'package:gachafigo/seeds/card_ids.dart'; // Assuming you have a separate file for card IDs
+import 'package:gachafigo/seeds/card_ids.dart';
+import 'package:gachafigo/services/location_service.dart';
 
 class GachaPage extends StatefulWidget {
   @override
@@ -37,6 +38,12 @@ class _GachaPageState extends State<GachaPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final currentUserId = prefs.getString('currentUserId');
+
+      final location = await LocationService.getCurrentLocation();
+      if (location == null) {
+        _showToast("Location permission required for gacha");
+        return;
+      }
 
       if (currentUserId == null || currentUserId.isEmpty) {
         _showToast("Session expired. Please login again.");
@@ -98,8 +105,9 @@ class _GachaPageState extends State<GachaPage> {
         urlImg: imageUrl,
         rarity: cardData['rarity']?.toInt() ?? 1,
         name: cardData['name'] ?? 'Unknown Card',
+        coordinates: location,
+        time: DateTime.now(),
       );
-
       // Save to database
       final cardsBox = Hive.box<GachaCard>('cards');
       await cardsBox.add(newCard);

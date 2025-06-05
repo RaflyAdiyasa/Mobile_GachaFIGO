@@ -40,6 +40,8 @@ class _CollectionPageState extends State<CollectionPage> {
                         urlImg: '',
                         rarity: 0,
                         name: 'Unknown',
+                        time: DateTime.now(),
+                        coordinates: '',
                       ),
                 ),
               )

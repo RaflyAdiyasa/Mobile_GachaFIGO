@@ -23,13 +23,14 @@ class GachaCardAdapter extends TypeAdapter<GachaCard> {
       name: fields[3] as String,
       coordinates: fields[4] as String,
       time: fields[5] as DateTime,
+      imageLore: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, GachaCard obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class GachaCardAdapter extends TypeAdapter<GachaCard> {
       ..writeByte(4)
       ..write(obj.coordinates)
       ..writeByte(5)
-      ..write(obj.time);
+      ..write(obj.time)
+      ..writeByte(6)
+      ..write(obj.imageLore);
   }
 
   @override

@@ -75,7 +75,7 @@ class _GachaPageState extends State<GachaPage> {
       final response = await http
           .get(
             Uri.parse(
-              'https://api.atlasacademy.io/nice/NA/equip/$randomCardId',
+              'https://api.atlasacademy.io/nice/NA/equip/$randomCardId?lore=true&lang=en',
             ),
             headers: {'Accept': 'application/json'},
           )
@@ -100,6 +100,14 @@ class _GachaPageState extends State<GachaPage> {
         debugPrint("Error parsing image URL: $e");
       }
 
+      String cardLore = '';
+      try {
+        cardLore = cardData['profile']?['comments']?[0]?['comment'] ?? '';
+      } catch (e) {
+        cardLore = 'No lore available';
+        debugPrint("Error parsing card lore: $e");
+      }
+
       final newCard = GachaCard(
         id: randomCardId,
         urlImg: imageUrl,
@@ -107,6 +115,7 @@ class _GachaPageState extends State<GachaPage> {
         name: cardData['name'] ?? 'Unknown Card',
         coordinates: location,
         time: DateTime.now(),
+        imageLore: cardLore,
       );
       // Save to database
       final cardsBox = Hive.box<GachaCard>('cards');
@@ -169,6 +178,26 @@ class _GachaPageState extends State<GachaPage> {
                     ),
                   SizedBox(height: 10),
                   Text('Rarity: ${'★' * card.rarity}'),
+                  SizedBox(height: 20),
+                  if (card.imageLore.isNotEmpty &&
+                      card.imageLore != 'No lore available')
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Lore:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          card.imageLore,
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),

@@ -42,6 +42,7 @@ class _CollectionPageState extends State<CollectionPage> {
                         name: 'Unknown',
                         time: DateTime.now(),
                         coordinates: '',
+                        imageLore: '',
                       ),
                 ),
               )
@@ -165,16 +166,9 @@ class _CollectionPageState extends State<CollectionPage> {
                       color: card.rarity >= 4 ? Colors.black87 : Colors.white70,
                     ),
                   ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Time: ${card.time}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: card.rarity >= 4 ? Colors.black87 : Colors.white70,
-                    ),
-                  ),
+                  SizedBox(height: 16),
                   Container(
-                    height: 300,
+                    height: 200,
                     width: double.infinity,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
@@ -188,6 +182,44 @@ class _CollectionPageState extends State<CollectionPage> {
                       ),
                     ),
                   ),
+                  if (card.imageLore.isNotEmpty &&
+                      card.imageLore != 'No lore available')
+                    Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Lore:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    card.rarity >= 4
+                                        ? Colors.black
+                                        : Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              card.imageLore,
+                              style: TextStyle(
+                                color:
+                                    card.rarity >= 4
+                                        ? Colors.black87
+                                        : Colors.white70,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -196,7 +228,9 @@ class _CollectionPageState extends State<CollectionPage> {
                         onPressed: () => Navigator.pop(context),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
-                          backgroundColor: Colors.white.withOpacity(0.8),
+                          backgroundColor: Colors.white.withAlpha(
+                            (0.8 * 255).toInt(),
+                          ),
                         ),
                         child: Text('Close'),
                       ),

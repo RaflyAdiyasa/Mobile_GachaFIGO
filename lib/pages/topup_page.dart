@@ -29,7 +29,7 @@ class _TopUpPageState extends State<TopUpPage> {
   ];
 
   final List<String> _paymentMethods = ['BCA', 'BNI', 'SeaBank', 'DANA', 'OVO'];
-  String? _selectedPayment;
+  String? _selectedPayment = 'BCA';
 
   void _showToast(String message) {
     Fluttertoast.showToast(

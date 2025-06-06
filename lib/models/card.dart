@@ -17,10 +17,13 @@ class GachaCard {
   final String name;
 
   @HiveField(4)
-  final String coordinates; // Format: "lat,long"
+  final String coordinates;
 
   @HiveField(5)
   final DateTime time;
+
+  @HiveField(6)
+  final String imageLore;
 
   GachaCard({
     required this.id,
@@ -29,5 +32,6 @@ class GachaCard {
     required this.name,
     required this.coordinates,
     required this.time,
+    required this.imageLore,
   });
 }

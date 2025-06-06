@@ -81,6 +81,7 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
                           name: 'Unknown',
                           coordinates: '0,0',
                           time: DateTime.now(),
+                          imageLore: '',
                         ),
                   );
                 })

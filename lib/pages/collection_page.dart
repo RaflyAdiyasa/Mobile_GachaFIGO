@@ -228,11 +228,29 @@ class _CollectionPageState extends State<CollectionPage> {
                         onPressed: () => Navigator.pop(context),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
-                          backgroundColor: Colors.white.withAlpha(
-                            (0.8 * 255).toInt(),
-                          ),
+                          backgroundColor: Colors.white.withOpacity(0.8),
                         ),
                         child: Text('Close'),
+                      ),
+                      FutureBuilder<bool>(
+                        future: _isCardFavorite(card.id),
+                        builder: (context, snapshot) {
+                          final isFavorite = snapshot.data ?? false;
+                          return AnimatedSwitcher(
+                            duration: Duration(milliseconds: 300),
+                            child: IconButton(
+                              key: ValueKey(isFavorite),
+                              icon: Icon(
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: isFavorite ? Colors.red : Colors.grey,
+                                size: 30,
+                              ),
+                              onPressed: () => _toggleFavorite(card.id),
+                            ),
+                          );
+                        },
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -252,6 +270,56 @@ class _CollectionPageState extends State<CollectionPage> {
             ),
           ),
     );
+  }
+
+  Future<void> _toggleFavorite(String cardId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserId = prefs.getString('currentUserId');
+
+    if (currentUserId == null) return;
+
+    final usersBox = Hive.box<User>('users');
+    final userIndex = usersBox.values.toList().indexWhere(
+      (u) => u.id == currentUserId,
+    );
+
+    if (userIndex == -1) return;
+
+    final user = usersBox.getAt(userIndex) as User;
+    final updatedFavorites = List<String>.from(user.favoriteCards);
+
+    if (updatedFavorites.contains(cardId)) {
+      updatedFavorites.remove(cardId);
+    } else {
+      updatedFavorites.add(cardId);
+    }
+
+    final updatedUser = User(
+      id: user.id,
+      username: user.username,
+      password: user.password,
+      credit: user.credit,
+      collection: List.from(user.collection),
+      favoriteCards: updatedFavorites,
+    );
+
+    await usersBox.putAt(userIndex, updatedUser);
+    setState(() {}); // Refresh the UI
+  }
+
+  Future<bool> _isCardFavorite(String cardId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserId = prefs.getString('currentUserId');
+
+    if (currentUserId == null) return false;
+
+    final usersBox = Hive.box<User>('users');
+    final user = usersBox.values.firstWhere(
+      (u) => u.id == currentUserId,
+      orElse: () => User(id: '', username: '', password: ''),
+    );
+
+    return user.favoriteCards.contains(cardId);
   }
 
   void _showDeleteConfirmation(GachaCard card) {

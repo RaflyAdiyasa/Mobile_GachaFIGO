@@ -113,7 +113,7 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: _buildSearchField(),
-        backgroundColor: Color(0xFF0D47A1),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         actions: [
           IconButton(
             icon: Icon(_searchQuery.isEmpty ? Icons.search : Icons.clear),
@@ -134,12 +134,12 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
     return TextField(
       controller: _searchController,
       decoration: InputDecoration(
-        hintText: 'Search by card name...',
+        hintText: 'Search ....',
         border: InputBorder.none,
-        hintStyle: TextStyle(color: Colors.white70),
+        hintStyle: TextStyle(color: const Color.fromARGB(179, 0, 0, 0)),
       ),
-      style: TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
+      style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+      cursorColor: const Color.fromARGB(255, 7, 118, 133),
     );
   }
 
@@ -160,7 +160,7 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
           );
         }).toList();
       },
-      icon: Icon(Icons.access_time, color: Colors.white),
+      icon: Icon(Icons.access_time, color: const Color.fromARGB(255, 0, 0, 0)),
     );
   }
 

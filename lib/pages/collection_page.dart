@@ -249,7 +249,12 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('My Collection'), centerTitle: true),
+      appBar: AppBar(
+        title: Text('My Collection'),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        foregroundColor: Colors.black,
+      ),
       body:
           _userCards.isEmpty
               ? Center(

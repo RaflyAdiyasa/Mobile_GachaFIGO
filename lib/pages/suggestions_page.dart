@@ -4,7 +4,10 @@ class SuggestionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Saran dan Kesan')),
+      appBar: AppBar(
+        title: Text('Saran dan Kesan'),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

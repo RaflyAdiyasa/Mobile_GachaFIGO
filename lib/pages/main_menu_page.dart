@@ -8,6 +8,7 @@ import 'package:gachafigo/pages/topup_page.dart';
 import 'package:gachafigo/pages/login_page.dart';
 import 'package:gachafigo/pages/suggestions_page.dart';
 import 'package:gachafigo/pages/profile_page.dart';
+import 'package:gachafigo/pages/gacha_history_page.dart';
 
 class MainMenuPage extends StatefulWidget {
   @override
@@ -155,10 +156,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
             icon: Icon(Icons.collections),
             label: 'Collection',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_comment),
-            label: 'Coming Soon',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
           BottomNavigationBarItem(icon: Icon(Icons.feedback), label: 'Saran'),
         ],
         onTap: (index) {
@@ -192,7 +190,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
       case 1:
         return CollectionPage();
       case 2:
-        return Center(child: Text('Coming Soon'));
+        return GachaHistoryPage();
       case 3:
         return SuggestionsPage();
       default:

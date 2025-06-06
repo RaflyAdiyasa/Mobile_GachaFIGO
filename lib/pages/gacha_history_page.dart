@@ -14,13 +14,45 @@ class GachaHistoryPage extends StatefulWidget {
 
 class _GachaHistoryPageState extends State<GachaHistoryPage> {
   List<GachaCard> _userGachaHistory = [];
+  List<GachaCard> _filteredHistory = [];
   String _username = '';
   String _selectedTimeZone = 'WIB';
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadUserHistory();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text;
+      _filterHistory();
+    });
+  }
+
+  void _filterHistory() {
+    if (_searchQuery.isEmpty) {
+      _filteredHistory = List.from(_userGachaHistory);
+    } else {
+      _filteredHistory =
+          _userGachaHistory
+              .where(
+                (card) => card.name.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ),
+              )
+              .toList();
+    }
   }
 
   Future<void> _loadUserHistory() async {
@@ -55,85 +87,174 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
                 .where((card) => card.id.isNotEmpty)
                 .toList();
 
-        // Sort by time (newest first)
         userCards.sort((a, b) => b.time.compareTo(a.time));
 
         setState(() {
           _userGachaHistory = userCards;
+          _filteredHistory = List.from(_userGachaHistory);
           _username = user.username;
         });
       }
     }
   }
 
+  String _formatDateTime(DateTime dateTime) {
+    final convertedTime = TimeZoneService.convertTimeZone(
+      dateTime,
+      _selectedTimeZone,
+    );
+    return '${convertedTime.day}/${convertedTime.month}/${convertedTime.year} '
+        '${convertedTime.hour}:${convertedTime.minute.toString().padLeft(2, '0')} '
+        '(${TimeZoneService.getTimeZoneAbbreviation(_selectedTimeZone)})';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('$_username\'s History'),
+        title: _buildSearchField(),
         backgroundColor: Color(0xFF0D47A1),
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              setState(() {
-                _selectedTimeZone = value;
-              });
+          IconButton(
+            icon: Icon(_searchQuery.isEmpty ? Icons.search : Icons.clear),
+            onPressed: () {
+              if (_searchQuery.isNotEmpty) {
+                _searchController.clear();
+              }
             },
-            itemBuilder: (BuildContext context) {
-              return ['WIB', 'WITA', 'WIT', 'LONDON', 'USA', 'JEPANG'].map((
-                String choice,
-              ) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(TimeZoneService.getTimeZoneAbbreviation(choice)),
-                );
-              }).toList();
-            },
-            icon: Icon(Icons.access_time),
           ),
+          _buildTimeZoneDropdown(),
         ],
       ),
-      body:
-          _userGachaHistory.isEmpty
-              ? Center(
-                child: Text(
-                  'No gacha history found',
-                  style: TextStyle(fontSize: 18),
-                ),
-              )
-              : ListView.builder(
-                padding: EdgeInsets.all(8),
-                itemCount: _userGachaHistory.length,
-                itemBuilder: (context, index) {
-                  final card = _userGachaHistory[index];
-                  final coordinates = card.coordinates.split(',');
-                  final lat = double.tryParse(coordinates[0]) ?? 0;
-                  final lng = double.tryParse(coordinates[1]) ?? 0;
+      body: _buildHistoryList(),
+    );
+  }
 
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: _getRarityColor(card.rarity),
-                        child: Text('${index + 1}'),
-                      ),
-                      title: Text(card.name),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${'★' * card.rarity}'),
-                          Text(
-                            _formatDateTime(card.time),
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      trailing: Icon(Icons.map),
-                      onTap: () => _showMapDialog(context, lat, lng, card),
-                    ),
-                  );
-                },
+  Widget _buildSearchField() {
+    return TextField(
+      controller: _searchController,
+      decoration: InputDecoration(
+        hintText: 'Search by card name...',
+        border: InputBorder.none,
+        hintStyle: TextStyle(color: Colors.white70),
+      ),
+      style: TextStyle(color: Colors.white),
+      cursorColor: Colors.white,
+    );
+  }
+
+  Widget _buildTimeZoneDropdown() {
+    return PopupMenuButton<String>(
+      onSelected: (value) {
+        setState(() {
+          _selectedTimeZone = value;
+        });
+      },
+      itemBuilder: (BuildContext context) {
+        return ['WIB', 'WITA', 'WIT', 'LONDON', 'USA', 'JEPANG'].map((
+          String choice,
+        ) {
+          return PopupMenuItem<String>(
+            value: choice,
+            child: Text(TimeZoneService.getTimeZoneAbbreviation(choice)),
+          );
+        }).toList();
+      },
+      icon: Icon(Icons.access_time, color: Colors.white),
+    );
+  }
+
+  Widget _buildHistoryList() {
+    if (_userGachaHistory.isEmpty) {
+      return Center(
+        child: Text('No gacha history found', style: TextStyle(fontSize: 18)),
+      );
+    }
+
+    if (_filteredHistory.isEmpty && _searchQuery.isNotEmpty) {
+      return Center(
+        child: Text(
+          'No results for "$_searchQuery"',
+          style: TextStyle(fontSize: 18),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      itemCount: _filteredHistory.length,
+      itemBuilder: (context, index) {
+        final card = _filteredHistory[index];
+        final coordinates = card.coordinates.split(',');
+        final lat = double.tryParse(coordinates[0]) ?? 0;
+        final lng = double.tryParse(coordinates[1]) ?? 0;
+
+        return Card(
+          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: _getRarityColor(card.rarity),
+              child: Text(
+                '${index + 1}',
+                style: TextStyle(color: Colors.white),
               ),
+            ),
+            title: _buildHighlightedText(card.name, _searchQuery),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${'★' * card.rarity}'),
+                Text(
+                  _formatDateTime(card.time),
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+            trailing: Icon(Icons.map),
+            onTap: () => _showMapDialog(context, lat, lng, card),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHighlightedText(String text, String query) {
+    if (query.isEmpty || !text.toLowerCase().contains(query.toLowerCase())) {
+      return Text(text);
+    }
+
+    final matches = query.toLowerCase().allMatches(text.toLowerCase()).toList();
+    final spans = <TextSpan>[];
+    int lastEnd = 0;
+
+    for (final match in matches) {
+      if (match.start > lastEnd) {
+        spans.add(TextSpan(text: text.substring(lastEnd, match.start)));
+      }
+
+      spans.add(
+        TextSpan(
+          text: text.substring(match.start, match.end),
+          style: TextStyle(
+            backgroundColor: Colors.yellow,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+
+      lastEnd = match.end;
+    }
+
+    if (lastEnd < text.length) {
+      spans.add(TextSpan(text: text.substring(lastEnd)));
+    }
+
+    return RichText(
+      text: TextSpan(
+        style: DefaultTextStyle.of(context).style,
+        children: spans,
+      ),
     );
   }
 
@@ -206,14 +327,15 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
           ),
     );
   }
-
-  String _formatDateTime(DateTime dateTime) {
-    final convertedTime = TimeZoneService.convertTimeZone(
-      dateTime,
-      _selectedTimeZone,
-    );
-    return '${convertedTime.day}/${convertedTime.month}/${convertedTime.year} '
-        '${convertedTime.hour}:${convertedTime.minute.toString().padLeft(2, '0')} '
-        '(${TimeZoneService.getTimeZoneAbbreviation(_selectedTimeZone)})';
-  }
 }
+
+//   String _formatDateTime(DateTime dateTime) {
+//     final convertedTime = TimeZoneService.convertTimeZone(
+//       dateTime,
+//       _selectedTimeZone,
+//     );
+//     return '${convertedTime.day}/${convertedTime.month}/${convertedTime.year} '
+//         '${convertedTime.hour}:${convertedTime.minute.toString().padLeft(2, '0')} '
+//         '(${TimeZoneService.getTimeZoneAbbreviation(_selectedTimeZone)})';
+//   }
+// }

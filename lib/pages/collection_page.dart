@@ -13,6 +13,9 @@ class CollectionPage extends StatefulWidget {
 
 class _CollectionPageState extends State<CollectionPage> {
   List<GachaCard> _userCards = [];
+  List<GachaCard> _displayedCards = [];
+  bool _showFavoritesOnly = false;
+  bool _isFavorite = false; // Track favorite state for animation
 
   @override
   void initState() {
@@ -49,7 +52,40 @@ class _CollectionPageState extends State<CollectionPage> {
               .where((card) => card.id.isNotEmpty)
               .toList();
 
+      _updateDisplayedCards();
       setState(() {});
+    }
+  }
+
+  void _updateDisplayedCards() {
+    if (_showFavoritesOnly) {
+      _loadFavorites();
+    } else {
+      _displayedCards = List.from(_userCards);
+      _displayedCards.sort((a, b) => b.rarity.compareTo(a.rarity));
+    }
+  }
+
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserId = prefs.getString('currentUserId');
+
+    if (currentUserId != null) {
+      final usersBox = Hive.box<User>('users');
+      final user = usersBox.values.firstWhere(
+        (u) => u.id == currentUserId,
+        orElse: () => User(id: '', username: '', password: ''),
+      );
+
+      if (user.id.isNotEmpty) {
+        final favoriteCardIds = user.favoriteCards;
+        _displayedCards =
+            _userCards
+                .where((card) => favoriteCardIds.contains(card.id))
+                .toList();
+        _displayedCards.sort((a, b) => b.rarity.compareTo(a.rarity));
+        setState(() {});
+      }
     }
   }
 
@@ -69,6 +105,8 @@ class _CollectionPageState extends State<CollectionPage> {
     final user = usersBox.getAt(userIndex) as User;
     final updatedCollection = List<String>.from(user.collection)
       ..remove(card.id);
+    final updatedFavorites = List<String>.from(user.favoriteCards)
+      ..remove(card.id);
 
     final updatedUser = User(
       id: user.id,
@@ -76,6 +114,7 @@ class _CollectionPageState extends State<CollectionPage> {
       password: user.password,
       credit: user.credit,
       collection: updatedCollection,
+      favoriteCards: updatedFavorites,
     );
 
     await usersBox.putAt(userIndex, updatedUser);
@@ -137,138 +176,158 @@ class _CollectionPageState extends State<CollectionPage> {
     );
   }
 
-  void _showCardDetail(GachaCard card) {
+  void _showCardDetail(GachaCard card) async {
+    // Check favorite status before showing dialog
+    var isFavorite = await _isCardFavorite(card.id);
+
     showDialog(
       context: context,
-      builder:
-          (context) => Dialog(
-            backgroundColor: Colors.transparent,
-            insetPadding: EdgeInsets.all(20),
-            child: Container(
-              decoration: _getCardDecoration(card.rarity),
-              padding: EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    card.name,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: card.rarity >= 4 ? Colors.black : Colors.white,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: EdgeInsets.all(20),
+              child: Container(
+                decoration: _getCardDecoration(card.rarity),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      card.name,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: card.rarity >= 4 ? Colors.black : Colors.white,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Rarity: ${'★' * card.rarity}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: card.rarity >= 4 ? Colors.black87 : Colors.white70,
+                    SizedBox(height: 8),
+                    Text(
+                      'Rarity: ${'★' * card.rarity}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color:
+                            card.rarity >= 4 ? Colors.black87 : Colors.white70,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: PhotoView(
-                        imageProvider: NetworkImage(card.urlImg),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                        backgroundDecoration: BoxDecoration(
-                          color: Colors.transparent,
+                    SizedBox(height: 16),
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: PhotoView(
+                          imageProvider: NetworkImage(card.urlImg),
+                          minScale: PhotoViewComputedScale.contained,
+                          maxScale: PhotoViewComputedScale.covered * 2,
+                          backgroundDecoration: BoxDecoration(
+                            color: Colors.transparent,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  if (card.imageLore.isNotEmpty &&
-                      card.imageLore != 'No lore available')
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Lore:',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color:
-                                    card.rarity >= 4
-                                        ? Colors.black
-                                        : Colors.white,
+                    if (card.imageLore.isNotEmpty &&
+                        card.imageLore != 'No lore available')
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight: 150, // Set maximum height for lore
+                            ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Lore:',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          card.rarity >= 4
+                                              ? Colors.black
+                                              : Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    card.imageLore,
+                                    style: TextStyle(
+                                      color:
+                                          card.rarity >= 4
+                                              ? Colors.black87
+                                              : Colors.white70,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              card.imageLore,
-                              style: TextStyle(
-                                color:
-                                    card.rarity >= 4
-                                        ? Colors.black87
-                                        : Colors.white70,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.black,
-                          backgroundColor: Colors.white.withOpacity(0.8),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.white.withOpacity(0.8),
+                          ),
+                          child: Text('Close'),
                         ),
-                        child: Text('Close'),
-                      ),
-                      FutureBuilder<bool>(
-                        future: _isCardFavorite(card.id),
-                        builder: (context, snapshot) {
-                          final isFavorite = snapshot.data ?? false;
-                          return AnimatedSwitcher(
+                        IconButton(
+                          icon: AnimatedSwitcher(
                             duration: Duration(milliseconds: 300),
-                            child: IconButton(
-                              key: ValueKey(isFavorite),
-                              icon: Icon(
-                                isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: isFavorite ? Colors.red : Colors.grey,
-                                size: 30,
-                              ),
-                              onPressed: () => _toggleFavorite(card.id),
+                            child: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              key: ValueKey<bool>(isFavorite),
+                              color: isFavorite ? Colors.red : Colors.grey,
+                              size: 30,
                             ),
-                          );
-                        },
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _showDeleteConfirmation(card);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.red[600],
+                          ),
+                          onPressed: () async {
+                            await _toggleFavorite(card.id);
+                            final newStatus = await _isCardFavorite(card.id);
+                            setState(() {
+                              isFavorite = newStatus;
+                            });
+                            // Update the main view if needed
+                            if (_showFavoritesOnly) {
+                              _loadFavorites();
+                            }
+                          },
                         ),
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  ),
-                ],
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _showDeleteConfirmation(card);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.red[600],
+                          ),
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -304,6 +363,7 @@ class _CollectionPageState extends State<CollectionPage> {
     );
 
     await usersBox.putAt(userIndex, updatedUser);
+    _updateDisplayedCards();
     setState(() {}); // Refresh the UI
   }
 
@@ -348,20 +408,38 @@ class _CollectionPageState extends State<CollectionPage> {
     );
   }
 
+  void _toggleViewMode() {
+    setState(() {
+      _showFavoritesOnly = !_showFavoritesOnly;
+      _updateDisplayedCards();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Collection'),
+        title: Text(_showFavoritesOnly ? 'Favorite Cards' : 'My Collection'),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         foregroundColor: Colors.black,
+        actions: [
+          IconButton(
+            icon: Icon(
+              _showFavoritesOnly ? Icons.collections : Icons.favorite,
+              color: _showFavoritesOnly ? Colors.red : Colors.black,
+            ),
+            onPressed: _toggleViewMode,
+          ),
+        ],
       ),
       body:
-          _userCards.isEmpty
+          _displayedCards.isEmpty
               ? Center(
                 child: Text(
-                  'No cards in your collection yet',
+                  _showFavoritesOnly
+                      ? 'No favorite cards yet'
+                      : 'No cards in your collection yet',
                   style: TextStyle(fontSize: 18),
                 ),
               )
@@ -373,10 +451,9 @@ class _CollectionPageState extends State<CollectionPage> {
                   mainAxisSpacing: 16,
                   childAspectRatio: 0.7,
                 ),
-                itemCount: _userCards.length,
+                itemCount: _displayedCards.length,
                 itemBuilder: (context, index) {
-                  _userCards.sort((a, b) => b.rarity.compareTo(a.rarity));
-                  final card = _userCards[index];
+                  final card = _displayedCards[index];
                   return GestureDetector(
                     onTap: () => _showCardDetail(card),
                     child: Container(

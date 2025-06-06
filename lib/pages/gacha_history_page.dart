@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gachafigo/models/card.dart';
 import 'package:gachafigo/models/user.dart';
+import 'package:gachafigo/services/timezone_service.dart';
 
 class GachaHistoryPage extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class GachaHistoryPage extends StatefulWidget {
 class _GachaHistoryPageState extends State<GachaHistoryPage> {
   List<GachaCard> _userGachaHistory = [];
   String _username = '';
+  String _selectedTimeZone = 'WIB';
 
   @override
   void initState() {
@@ -68,8 +70,28 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('$_username\'s Gacha History'),
+        title: Text('$_username\'s History'),
         backgroundColor: Color(0xFF0D47A1),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              setState(() {
+                _selectedTimeZone = value;
+              });
+            },
+            itemBuilder: (BuildContext context) {
+              return ['WIB', 'WITA', 'WIT', 'LONDON', 'USA', 'JEPANG'].map((
+                String choice,
+              ) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(TimeZoneService.getTimeZoneAbbreviation(choice)),
+                );
+              }).toList();
+            },
+            icon: Icon(Icons.access_time),
+          ),
+        ],
       ),
       body:
           _userGachaHistory.isEmpty
@@ -101,7 +123,7 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
                         children: [
                           Text('${'★' * card.rarity}'),
                           Text(
-                            '${card.time.toString().substring(0, 16)}',
+                            _formatDateTime(card.time),
                             style: TextStyle(fontSize: 12),
                           ),
                         ],
@@ -183,5 +205,15 @@ class _GachaHistoryPageState extends State<GachaHistoryPage> {
             ],
           ),
     );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    final convertedTime = TimeZoneService.convertTimeZone(
+      dateTime,
+      _selectedTimeZone,
+    );
+    return '${convertedTime.day}/${convertedTime.month}/${convertedTime.year} '
+        '${convertedTime.hour}:${convertedTime.minute.toString().padLeft(2, '0')} '
+        '(${TimeZoneService.getTimeZoneAbbreviation(_selectedTimeZone)})';
   }
 }

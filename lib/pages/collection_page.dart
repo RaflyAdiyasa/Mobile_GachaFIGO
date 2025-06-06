@@ -136,73 +136,6 @@ class _CollectionPageState extends State<CollectionPage> {
     );
   }
 
-  // void _showCardDetail(GachaCard card) {
-  //   showDialog(
-  //     context: context,
-  //     builder:
-  //         (context) => Dialog(
-  //           backgroundColor: Colors.transparent,
-  //           insetPadding: EdgeInsets.all(20),
-  //           child: Container(
-  //             decoration: _getCardDecoration(card.rarity),
-  //             padding: EdgeInsets.all(16),
-  //             child: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 Text(
-  //                   card.name,
-  //                   style: TextStyle(
-  //                     fontSize: 20,
-  //                     fontWeight: FontWeight.bold,
-  //                     color: card.rarity >= 4 ? Colors.black : Colors.white,
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: 8),
-  //                 Text(
-  //                   'Rarity: ${'★' * card.rarity}',
-  //                   style: TextStyle(
-  //                     fontSize: 16,
-  //                     color: card.rarity >= 4 ? Colors.black87 : Colors.white70,
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: 16),
-  //                 Container(
-  //                   height: 300,
-  //                   width: double.infinity,
-  //                   child: ClipRRect(
-  //                     borderRadius: BorderRadius.circular(8),
-  //                     child: PhotoView(
-  //                       imageProvider: NetworkImage(card.urlImg),
-  //                       minScale: PhotoViewComputedScale.contained,
-  //                       maxScale: PhotoViewComputedScale.covered * 2,
-  //                       backgroundDecoration: BoxDecoration(
-  //                         color: Colors.transparent,
-  //                       ),
-  //                       loadingBuilder:
-  //                           (context, event) =>
-  //                               Center(child: CircularProgressIndicator()),
-  //                       errorBuilder:
-  //                           (context, error, stackTrace) =>
-  //                               Center(child: Icon(Icons.error, size: 50)),
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: 16),
-  //                 ElevatedButton(
-  //                   onPressed: () => Navigator.pop(context),
-  //                   style: ElevatedButton.styleFrom(
-  //                     backgroundColor: Colors.white.withOpacity(0.8),
-  //                     foregroundColor: Colors.black,
-  //                   ),
-  //                   child: Text('Close'),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //   );
-  // }
-
   void _showCardDetail(GachaCard card) {
     showDialog(
       context: context,
@@ -335,6 +268,7 @@ class _CollectionPageState extends State<CollectionPage> {
                 ),
                 itemCount: _userCards.length,
                 itemBuilder: (context, index) {
+                  _userCards.sort((a, b) => b.rarity.compareTo(a.rarity));
                   final card = _userCards[index];
                   return GestureDetector(
                     onTap: () => _showCardDetail(card),

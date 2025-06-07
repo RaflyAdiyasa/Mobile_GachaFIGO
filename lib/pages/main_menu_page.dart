@@ -82,136 +82,159 @@ class _MainMenuPageState extends State<MainMenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
-              child: CircleAvatar(
-                radius: 15,
-                backgroundImage: NetworkImage(
-                  'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                'https://static.atlasacademy.io/NA/CharaGraph/9302590/9302590a.png',
+                fit: BoxFit.cover,
+              ),
+              Container(color: Colors.black.withOpacity(0.25)),
+            ],
+          ),
+          title: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundImage: NetworkImage(
+                    'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
+                  ),
                 ),
               ),
-            ),
-            SizedBox(width: 10),
-            Text(
-              // 'Username :  $_username',
-              'GachaFI-GO',
-              style: TextStyle(
-                color: const Color.fromARGB(179, 32, 5, 151),
-                fontWeight: FontWeight.bold,
+              SizedBox(width: 10),
+              Text(
+                'GachaFI-GO',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      color: Colors.black54,
+                      offset: Offset(1, 1),
+                    ),
+                  ],
+                ),
               ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.account_balance_wallet, color: Colors.white),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder:
+                      (context) => AlertDialog(
+                        title: Row(
+                          children: [
+                            Icon(
+                              Icons.account_balance_wallet,
+                              color: Colors.blue,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Wallet Information',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ],
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: CircleAvatar(
+                                radius: 15,
+                                backgroundImage: NetworkImage(
+                                  'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
+                                ),
+                              ),
+                              title: Text(
+                                _username,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text('Account Balance'),
+                            ),
+                            Divider(),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Current Credits:',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    '$_credit',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              'Close',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                          SizedBox(width: 40),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TopUpPage(),
+                                ),
+                              ).then((_) => _loadUserData());
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color.fromARGB(
+                                179,
+                                205,
+                                194,
+                                255,
+                              ),
+                            ),
+                            child: Text('Top Up'),
+                          ),
+                        ],
+                      ),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: _logout,
             ),
           ],
         ),
-        backgroundColor: Color.fromARGB(179, 205, 194, 255),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.account_balance_wallet, color: Colors.blue[800]),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder:
-                    (context) => AlertDialog(
-                      title: Row(
-                        children: [
-                          Icon(
-                            Icons.account_balance_wallet,
-                            color: Colors.blue,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'Wallet Information',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ],
-                      ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // User Information Section
-                          ListTile(
-                            leading: CircleAvatar(
-                              radius: 15,
-                              backgroundImage: NetworkImage(
-                                'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
-                              ),
-                            ),
-                            title: Text(
-                              _username,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text('Account Balance'),
-                          ),
-
-                          Divider(),
-
-                          // Balance Information
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Current Credits:',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                Text(
-                                  '$_credit',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green[700],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Top Up Options
-                          SizedBox(height: 16),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(
-                            'Close',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                        SizedBox(width: 40),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TopUpPage(),
-                              ),
-                            ).then((_) => _loadUserData());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(179, 205, 194, 255),
-                          ),
-                          child: Text('Top Up'),
-                        ),
-                      ],
-                    ),
-              );
-            },
-          ),
-
-          IconButton(icon: Icon(Icons.logout), onPressed: _logout),
-        ],
       ),
+
       body: _getPage(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

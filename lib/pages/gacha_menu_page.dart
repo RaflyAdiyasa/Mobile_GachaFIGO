@@ -38,47 +38,80 @@ class HomeMenu extends StatelessWidget {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Color.fromARGB(179, 205, 194, 255),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
+      clipBehavior: Clip.antiAlias, // agar gambar tidak keluar dari border
+      child: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.network(
+              'https://static.atlasacademy.io/NA/CharaGraph/9807740/9807740a.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Semi-transparent overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(color: Colors.black.withOpacity(0.3)),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               children: [
-                CircleAvatar(
-                  radius: 15,
-                  backgroundImage: NetworkImage(
-                    'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Welcome, $username',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0),
-                        ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 15,
+                      backgroundImage: NetworkImage(
+                        'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Credit: $credit',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: const Color.fromARGB(255, 5, 192, 21),
-                        ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome, $username',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Colors.black54,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Credit: $credit',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 5, 255, 21),
+                              fontWeight: FontWeight.w600,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Colors.black54,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -168,10 +201,10 @@ class HomeMenu extends StatelessWidget {
           'Game One Ball',
           Colors.purple,
           () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => EventGamePage()),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EventGamePage()),
+            );
           },
         ),
         _buildFeatureItem(
@@ -180,10 +213,10 @@ class HomeMenu extends StatelessWidget {
           'Game Two Ball',
           Colors.blue,
           () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => AccelerometerGame()),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AccelerometerGame()),
+            );
           },
         ),
       ],

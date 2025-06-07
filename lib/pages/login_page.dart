@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-  final Color _primaryColor = Color.fromARGB(179, 205, 194, 255);
+  final Color _primaryColor = Color.fromARGB(179, 47, 0, 255);
 
   String _hashPassword(String password) {
     return sha256.convert(utf8.encode(password)).toString();
@@ -68,16 +68,42 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'LOGIN',
-          style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          flexibleSpace: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                'https://static.atlasacademy.io/NA/CharaGraph/9302590/9302590a.png',
+                fit: BoxFit.cover,
+              ),
+              Container(
+                color: Colors.black.withOpacity(0.25), // agar teks terlihat
+              ),
+            ],
+          ),
+          title: Text(
+            'LOGIN',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 4,
+                  color: Colors.black54,
+                  offset: Offset(1, 1),
+                ),
+              ],
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
-        backgroundColor: _primaryColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
       ),
+
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -133,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _primaryColor,
+                            backgroundColor: const Color.fromARGB(179, 0, 0, 0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -145,10 +171,14 @@ class _LoginPageState extends State<LoginPage> {
                                   )
                                   : Text(
                                     'LOGIN',
-                                    style: TextStyle(fontSize: 16),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
                                   ),
                         ),
                       ),
+
                       SizedBox(height: 16),
                       TextButton(
                         onPressed: () {

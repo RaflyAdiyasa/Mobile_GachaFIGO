@@ -160,31 +160,67 @@ class _TopUpPageState extends State<TopUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Top Up Credits'),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: DropdownButton<String>(
-              value: _selectedCurrency,
-              underline: Container(),
-              icon: Icon(Icons.currency_exchange, color: Colors.white),
-              items:
-                  _currencies.map((currency) {
-                    return DropdownMenuItem(
-                      value: currency,
-                      child: Text(currency),
-                    );
-                  }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedCurrency = value!;
-                });
-              },
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          flexibleSpace: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                'https://static.atlasacademy.io/NA/CharaGraph/9302590/9302590a.png',
+                fit: BoxFit.cover,
+              ),
+              Container(
+                color: Colors.black.withOpacity(
+                  0.25,
+                ), // Overlay untuk keterbacaan
+              ),
+            ],
+          ),
+          title: Text(
+            'Top Up Credits',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 4,
+                  color: Colors.black54,
+                  offset: Offset(1, 1),
+                ),
+              ],
             ),
           ),
-        ],
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  dropdownColor: Colors.grey[900],
+                  value: _selectedCurrency,
+                  icon: Icon(Icons.currency_exchange, color: Colors.white),
+                  style: TextStyle(color: Colors.white),
+                  items:
+                      _currencies.map((currency) {
+                        return DropdownMenuItem(
+                          value: currency,
+                          child: Text(currency),
+                        );
+                      }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCurrency = value!;
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
+
       body: ListView.builder(
         padding: EdgeInsets.all(16),
         itemCount: _bundles.length,

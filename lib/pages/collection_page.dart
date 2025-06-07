@@ -420,7 +420,7 @@ class _CollectionPageState extends State<CollectionPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_showFavoritesOnly ? 'Favorite Cards' : 'My Collection'),
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         foregroundColor: Colors.black,
         actions: [

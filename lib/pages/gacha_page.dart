@@ -503,7 +503,11 @@ class _GachaPageState extends State<GachaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gacha', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+        title: Text(
+          'Gacha',
+          style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+        ),
         backgroundColor: _primaryColor,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.white),
@@ -516,169 +520,186 @@ class _GachaPageState extends State<GachaPage> {
           ),
           elevation: 8,
           margin: EdgeInsets.all(24),
-          child: Container(
-            height: 320, // menyesuaikan tinggi gambar
-            width: double.infinity,
-            child: Stack(
-              children: [
-                // Background image
-                Positioned.fill(
-                  child: Image.network(
-                    'https://static.atlasacademy.io/NA/CharaGraph/9400120/9400120a.png',
-                    fit: BoxFit.cover,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                color: Colors.transparent,
+                child: Text(
+                  'Gacha Pull',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
-
-                // Overlay agar tombol tetap terlihat jelas
-                Positioned.fill(
-                  child: Container(color: Colors.black.withOpacity(0.25)),
-                ),
-
-                // Tombol di bagian bawah
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Tombol Pull Gacha (Silver)
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFFE0E0E0),
-                                Color(0xFFB0B0B0),
-                                Color(0xFFE0E0E0),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                offset: Offset(2, 4),
-                                blurRadius: 6,
-                              ),
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            onPressed: _isLoading ? null : _performGacha,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            child:
-                                _isLoading
-                                    ? SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                    : Row(
-                                      children: [
-                                        Icon(
-                                          Icons.auto_awesome,
-                                          size: 16,
-                                          color: Colors.black87,
-                                        ),
-                                        SizedBox(width: 6),
-                                        Text(
-                                          'GACHA',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-
-                        // Tombol Pull 10x (Silver Rainbow)
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFFE0E0E0),
-                                Color(0xFFFFC0CB),
-                                Color(0xFF87CEEB),
-                                Color(0xFFE0E0E0),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.6),
-                                offset: Offset(3, 5),
-                                blurRadius: 8,
-                              ),
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            onPressed: _isLoading10x ? null : _perform10xGacha,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            child:
-                                _isLoading10x
-                                    ? SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                    : Row(
-                                      children: [
-                                        Icon(
-                                          Icons.auto_awesome_mosaic,
-                                          size: 16,
-                                          color: Colors.black87,
-                                        ),
-                                        SizedBox(width: 6),
-                                        Text(
-                                          '10x',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                          ),
-                        ),
-                      ],
+              ),
+              Container(
+                height: 420,
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    // Background image
+                    Positioned.fill(
+                      child: Image.network(
+                        'https://static.atlasacademy.io/NA/CharaGraph/9400120/9400120a.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
+
+                    // Overlay agar tombol tetap terlihat jelas
+                    Positioned.fill(
+                      child: Container(color: Colors.black.withOpacity(0.25)),
+                    ),
+
+                    // Tombol di bagian bawah
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Tombol Pull Gacha (Silver)
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFE0E0E0),
+                                    Color(0xFFB0B0B0),
+                                    Color(0xFFE0E0E0),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    offset: Offset(2, 4),
+                                    blurRadius: 6,
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed: _isLoading ? null : _performGacha,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child:
+                                    _isLoading
+                                        ? SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                        : Row(
+                                          children: [
+                                            Icon(
+                                              Icons.auto_awesome,
+                                              size: 16,
+                                              color: Colors.black87,
+                                            ),
+                                            SizedBox(width: 6),
+                                            Text(
+                                              'GACHA  1x',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                              ),
+                            ),
+                            SizedBox(width: 16),
+
+                            // Tombol Pull 10x (Silver Rainbow)
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFE0E0E0),
+                                    Color(0xFFFFC0CB),
+                                    Color(0xFF87CEEB),
+                                    Color(0xFFE0E0E0),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.6),
+                                    offset: Offset(3, 5),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed:
+                                    _isLoading10x ? null : _perform10xGacha,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child:
+                                    _isLoading10x
+                                        ? SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                        : Row(
+                                          children: [
+                                            Icon(
+                                              Icons.auto_awesome_mosaic,
+                                              size: 16,
+                                              color: Colors.black87,
+                                            ),
+                                            SizedBox(width: 6),
+                                            Text(
+                                              ' GACHA 10x',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

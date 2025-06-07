@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gachafigo/pages/gacha_page.dart';
 import 'package:gachafigo/pages/event_game_page.dart';
+import 'package:gachafigo/pages/profile_page.dart';
 import 'package:gachafigo/pages/topup_page.dart';
+import 'package:gachafigo/pages/accelerometer_game.dart';
 
 class HomeMenu extends StatelessWidget {
   final VoidCallback onGachaPressed;
@@ -107,11 +109,22 @@ class HomeMenu extends StatelessWidget {
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
       children: [
-        _buildFeatureItem(context, Icons.star, 'Featured', Colors.amber, () {}),
         _buildFeatureItem(
           context,
-          Icons.leaderboard,
-          'Ranking',
+          Icons.person_2_sharp,
+          'Profile',
+          Colors.amber,
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()),
+            );
+          },
+        ),
+        _buildFeatureItem(
+          context,
+          Icons.attach_money,
+          'Top Up',
           Colors.green,
           () {
             Navigator.push(
@@ -120,13 +133,30 @@ class HomeMenu extends StatelessWidget {
             );
           },
         ),
-        _buildFeatureItem(context, Icons.event, 'Game', Colors.purple, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => EventGamePage()),
-          );
-        }),
-        _buildFeatureItem(context, Icons.help, 'Tutorial', Colors.blue, () {}),
+        _buildFeatureItem(
+          context,
+          Icons.sports_basketball,
+          'Game One Ball',
+          Colors.purple,
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EventGamePage()),
+            );
+          },
+        ),
+        _buildFeatureItem(
+          context,
+          Icons.sports_baseball,
+          'Game Two Ball',
+          Colors.blue,
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AccelerometerGame()),
+            );
+          },
+        ),
       ],
     );
   }

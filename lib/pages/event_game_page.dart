@@ -14,7 +14,7 @@ class EventGamePage extends StatefulWidget {
 class _EventGamePageState extends State<EventGamePage> {
   double _posX = 0;
   double _posY = 0;
-  int _score = 0;
+  int _score = 1;
   int _shakeCount = 0;
   bool _isGameActive = true;
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;

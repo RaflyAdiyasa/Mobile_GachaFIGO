@@ -51,7 +51,7 @@ class SuggestionsPage extends StatelessWidget {
                       context,
                       'Keterangan Tambahan',
                       Icons.note,
-                      'Hidup seperti Flutter sungguh memorable dan berotak senku',
+                      'Hidup menantang penuh dengan kopi , enak',
                       _accentColor,
                     ),
                     _buildSection(
@@ -59,7 +59,7 @@ class SuggestionsPage extends StatelessWidget {
                       'Saran untuk Pengembangan',
                       Icons.lightbulb,
                       'Cih kurang menantang, hmmmpph !!\n'
-                          'Harusnya buat app untuk Smartwatch',
+                          'Harusnya buat app untuk Smartwatch, need more cafeiine',
 
                       Colors.red,
                     ),

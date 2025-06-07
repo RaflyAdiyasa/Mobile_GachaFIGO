@@ -502,15 +502,40 @@ class _GachaPageState extends State<GachaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Gacha',
-          style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          flexibleSpace: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                'https://static.atlasacademy.io/NA/CharaGraph/9302590/9302590a.png',
+                fit: BoxFit.cover,
+              ),
+              Container(
+                color: Colors.black.withOpacity(0.25), // agar teks terlihat
+              ),
+            ],
+          ),
+          title: Text(
+            'GACHA',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 4,
+                  color: Colors.black54,
+                  offset: Offset(1, 1),
+                ),
+              ],
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
-        backgroundColor: _primaryColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Center(
         child: Card(
@@ -524,18 +549,7 @@ class _GachaPageState extends State<GachaPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                color: Colors.transparent,
-                child: Text(
-                  'Gacha Pull',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-              ),
-              Container(
-                height: 420,
+                height: 440,
                 width: double.infinity,
                 child: Stack(
                   children: [

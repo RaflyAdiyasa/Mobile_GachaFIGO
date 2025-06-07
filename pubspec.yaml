@@ -48,6 +48,7 @@ dependencies:
   flutter_map: ^8.1.1
   latlong2: ^0.9.1
   timezone: ^0.10.1
+  sensors_plus: ^6.1.1
 
 dev_dependencies:
   flutter_test:

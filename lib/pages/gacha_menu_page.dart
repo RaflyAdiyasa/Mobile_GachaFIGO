@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gachafigo/pages/gacha_page.dart';
+import 'package:gachafigo/pages/event_game_page.dart';
+import 'package:gachafigo/pages/topup_page.dart';
 
 class HomeMenu extends StatelessWidget {
   final VoidCallback onGachaPressed;
@@ -111,9 +113,19 @@ class HomeMenu extends StatelessWidget {
           Icons.leaderboard,
           'Ranking',
           Colors.green,
-          () {},
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TopUpPage()),
+            );
+          },
         ),
-        _buildFeatureItem(context, Icons.event, 'Events', Colors.purple, () {}),
+        _buildFeatureItem(context, Icons.event, 'Game', Colors.purple, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EventGamePage()),
+          );
+        }),
         _buildFeatureItem(context, Icons.help, 'Tutorial', Colors.blue, () {}),
       ],
     );

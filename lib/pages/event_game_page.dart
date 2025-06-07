@@ -5,6 +5,7 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive/hive.dart';
 import 'package:gachafigo/models/user.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EventGamePage extends StatefulWidget {
   @override
@@ -14,10 +15,20 @@ class EventGamePage extends StatefulWidget {
 class _EventGamePageState extends State<EventGamePage> {
   double _posX = 0;
   double _posY = 0;
-  int _score = 1;
+  int _score = 0; // Changed from 1 to 0 for consistency
   int _shakeCount = 0;
   bool _isGameActive = true;
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green[800],
+      textColor: Colors.white,
+    );
+  }
 
   @override
   void initState() {
@@ -59,35 +70,43 @@ class _EventGamePageState extends State<EventGamePage> {
     });
   }
 
-  Future<void> _saveScore() async {
-    if (_score == 0) return;
+  Future<void> _saveScore(int scoreGame) async {
+    if (scoreGame == 0) {
+      _showToast('No credits to save');
+      return;
+    }
 
     final prefs = await SharedPreferences.getInstance();
     final currentUserId = prefs.getString('currentUserId');
 
-    if (currentUserId == null) return;
+    if (currentUserId == null) {
+      _showToast('Session expired. Please login again.');
+      return;
+    }
 
     final usersBox = Hive.box<User>('users');
     final userIndex = usersBox.values.toList().indexWhere(
       (u) => u.id == currentUserId,
     );
 
-    if (userIndex == -1) return;
+    if (userIndex == -1) {
+      _showToast('User not found');
+      return;
+    }
 
     final user = usersBox.getAt(userIndex) as User;
     final updatedUser = User(
       id: user.id,
       username: user.username,
       password: user.password,
-      credit: user.credit + _score,
+      credit: user.credit + scoreGame,
       collection: List.from(user.collection),
     );
 
     await usersBox.putAt(userIndex, updatedUser);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$_score credits added to your account!')),
-    );
+    _showToast('Success! $scoreGame credits added to your account');
+    Navigator.pop(context);
   }
 
   @override
@@ -98,10 +117,7 @@ class _EventGamePageState extends State<EventGamePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.save),
-            onPressed: () {
-              _isGameActive = false;
-              _saveScore().then((_) => Navigator.pop(context));
-            },
+            onPressed: () => _saveScore(_score),
           ),
         ],
       ),

@@ -302,7 +302,7 @@ class _CollectionPageState extends State<CollectionPage> {
                             setState(() {
                               isFavorite = newStatus;
                             });
-                            // Update the main view if needed
+
                             if (_showFavoritesOnly) {
                               _loadFavorites();
                             }

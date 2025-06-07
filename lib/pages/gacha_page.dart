@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -18,7 +20,12 @@ class GachaPage extends StatefulWidget {
 class _GachaPageState extends State<GachaPage> {
   bool _isLoading = false;
   bool _isLoading10x = false;
-  final List<String> _cardIds = cardIds;
+  // card_1s , card_2s, card_3s, card_4s, card_5s
+  final List<String> _card1s = card_1s; // 1★ cards
+  final List<String> _card2s = card_2s; // 2★ cards
+  final List<String> _card3s = card_3s; // 3★ cards
+  final List<String> _card4s = card_4s; // 4★ cards
+  final List<String> _card5s = card_5s; // 5★ cards
   final Color _primaryColor = Color.fromARGB(179, 205, 194, 255);
   final Color _buttonColor = Color.fromARGB(255, 142, 175, 226);
 
@@ -34,14 +41,33 @@ class _GachaPageState extends State<GachaPage> {
     );
   }
 
+  String _getRandomCardId() {
+    final random = Random().nextDouble() * 100; // Random number between 0-100
+
+    if (random < 10) {
+      // 10% chance for 1★
+      return _card1s[Random().nextInt(_card1s.length)];
+    } else if (random < 35) {
+      // 25% chance for 4★ (10-35)
+      return _card4s[Random().nextInt(_card4s.length)];
+    } else if (random < 70) {
+      // 35% chance for 3★ (35-70)
+      return _card3s[Random().nextInt(_card3s.length)];
+    } else if (random < 95) {
+      // 25% chance for 2★ (70-95)
+      return _card2s[Random().nextInt(_card2s.length)];
+    } else {
+      // 5% chance for 5★ (95-100)
+      return _card5s[Random().nextInt(_card5s.length)];
+    }
+  }
+
   Future<List<GachaCard>> _fetchCards(int count) async {
     final List<GachaCard> cards = [];
     final location = await LocationService.getCurrentLocation();
 
     for (int i = 0; i < count; i++) {
-      final randomCardId =
-          _cardIds[DateTime.now().millisecondsSinceEpoch % _cardIds.length];
-
+      final randomCardId = _getRandomCardId();
       final response = await http
           .get(
             Uri.parse(
@@ -381,9 +407,12 @@ class _GachaPageState extends State<GachaPage> {
       context: context,
       builder:
           (context) => Dialog(
-            backgroundColor: _primaryColor,
+            backgroundColor: const Color.fromARGB(169, 236, 230, 230),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(
+                vertical: 25.0,
+                horizontal: 15.0,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -391,7 +420,7 @@ class _GachaPageState extends State<GachaPage> {
                     '10x Gacha Results',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.white,
+                      color: const Color.fromARGB(255, 0, 0, 0),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -488,7 +517,7 @@ class _GachaPageState extends State<GachaPage> {
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _buttonColor,
+                      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                     ),
                     child: Text('Close', style: TextStyle(color: Colors.white)),
                   ),

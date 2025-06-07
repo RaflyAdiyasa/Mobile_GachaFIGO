@@ -38,7 +38,7 @@ class HomeMenu extends StatelessWidget {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Colors.blue[50],
+      color: Color.fromARGB(179, 205, 194, 255),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -61,13 +61,16 @@ class HomeMenu extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: Color.fromARGB(255, 0, 0, 0),
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Credit: $credit',
-                        style: TextStyle(fontSize: 16, color: Colors.blue[800]),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: const Color.fromARGB(255, 5, 192, 21),
+                        ),
                       ),
                     ],
                   ),
@@ -165,10 +168,10 @@ class HomeMenu extends StatelessWidget {
           'Game One Ball',
           Colors.purple,
           () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EventGamePage()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => EventGamePage()),
+            // );
           },
         ),
         _buildFeatureItem(
@@ -177,10 +180,10 @@ class HomeMenu extends StatelessWidget {
           'Game Two Ball',
           Colors.blue,
           () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AccelerometerGame()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => AccelerometerGame()),
+            // );
           },
         ),
       ],

@@ -22,10 +22,18 @@ class _TopUpPageState extends State<TopUpPage> {
   };
 
   final List<Map<String, dynamic>> _bundles = [
-    {'credits': 3000, 'usd_price': 0.5},
-    {'credits': 9000, 'usd_price': 2.0},
-    {'credits': 30000, 'usd_price': 5.0},
-    {'credits': 90000, 'usd_price': 15.0},
+    {'credits': 300, 'usd_price': 0.5},
+    {'credits': 900, 'usd_price': 2.0},
+    {'credits': 3000, 'usd_price': 5.0},
+    {'credits': 9000, 'usd_price': 15.0},
+    {'credits': 30000, 'usd_price': 50.0},
+    {'credits': 90000, 'usd_price': 100.0},
+    {'credits': 300000, 'usd_price': 200.0},
+    {'credits': 900000, 'usd_price': 500.0},
+    {'credits': 3000000, 'usd_price': 1000.0},
+    {'credits': 9000000, 'usd_price': 2000.0},
+    {'credits': 30000000, 'usd_price': 5000.0},
+    {'credits': 900000000, 'usd_price': 10000.0},
   ];
 
   final List<String> _paymentMethods = ['BCA', 'BNI', 'SeaBank', 'DANA', 'OVO'];

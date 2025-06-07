@@ -9,6 +9,7 @@ import 'package:gachafigo/pages/login_page.dart';
 import 'package:gachafigo/pages/suggestions_page.dart';
 import 'package:gachafigo/pages/profile_page.dart';
 import 'package:gachafigo/pages/gacha_history_page.dart';
+import 'package:gachafigo/pages/gacha_menu_page.dart';
 
 class MainMenuPage extends StatefulWidget {
   @override
@@ -93,14 +94,15 @@ class _MainMenuPageState extends State<MainMenuPage> {
               },
               child: CircleAvatar(
                 radius: 15,
-                backgroundImage: AssetImage(
-                  'lib/assets/img/logo1.jpeg',
-                ), // gunakan sebagai avatar profile
+                backgroundImage: NetworkImage(
+                  'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
+                ),
               ),
             ),
             SizedBox(width: 10),
             Text(
-              'Username :  $_username',
+              // 'Username :  $_username',
+              'GachaFI-GO',
               style: TextStyle(
                 color: const Color.fromARGB(179, 32, 5, 151),
                 fontWeight: FontWeight.bold,
@@ -110,17 +112,229 @@ class _MainMenuPageState extends State<MainMenuPage> {
         ),
         backgroundColor: Color.fromARGB(179, 205, 194, 255),
         actions: [
+          // IconButton(
+          //   icon: Icon(Icons.account_balance_wallet),
+          //   onPressed: () {
+          //     showModalBottomSheet(
+          //       context: context,
+          //       backgroundColor: Colors.transparent,
+          //       isScrollControlled: true,
+          //       builder:
+          //           (context) => Container(
+          //             padding: const EdgeInsets.all(20),
+          //             margin: const EdgeInsets.all(10),
+          //             decoration: BoxDecoration(
+          //               color: Colors.white,
+          //               borderRadius: BorderRadius.circular(20),
+          //               boxShadow: [
+          //                 BoxShadow(
+          //                   color: Colors.black.withOpacity(0.2),
+          //                   blurRadius: 10,
+          //                   spreadRadius: 2,
+          //                 ),
+          //               ],
+          //             ),
+          //             child: Column(
+          //               mainAxisSize: MainAxisSize.min,
+          //               children: [
+          //                 // Header dengan avatar dan username
+          //                 Row(
+          //                   children: [
+          //                     CircleAvatar(
+          //                       radius: 15,
+          //                       backgroundImage: NetworkImage(
+          //                         'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
+          //                       ),
+          //                     ),
+          //                     const SizedBox(width: 10),
+          //                     Text(
+          //                       _username,
+          //                       style: TextStyle(
+          //                         fontSize: 18,
+          //                         fontWeight: FontWeight.bold,
+          //                         color: const Color.fromARGB(179, 0, 0, 0),
+          //                       ),
+          //                     ),
+          //                   ],
+          //                 ),
+          //                 const SizedBox(height: 20),
+
+          //                 // Credit display
+          //                 Container(
+          //                   padding: const EdgeInsets.all(15),
+          //                   decoration: BoxDecoration(
+          //                     color: const Color.fromARGB(179, 205, 194, 255),
+          //                     borderRadius: BorderRadius.circular(15),
+          //                   ),
+          //                   child: Column(
+          //                     children: [
+          //                       const Text(
+          //                         'Current Balance',
+          //                         style: TextStyle(
+          //                           fontSize: 16,
+          //                           color: Colors.blueGrey,
+          //                         ),
+          //                       ),
+          //                       const SizedBox(height: 5),
+          //                       Text(
+          //                         '$_credit Credits',
+          //                         style: const TextStyle(
+          //                           fontSize: 24,
+          //                           fontWeight: FontWeight.bold,
+          //                           color: Color.fromARGB(255, 0, 0, 0),
+          //                         ),
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //                 const SizedBox(height: 20),
+
+          //                 // Action buttons
+          //                 Row(
+          //                   children: [
+          //                     Expanded(
+          //                       child: OutlinedButton(
+          //                         onPressed: () {
+          //                           Navigator.pop(context);
+          //                           Navigator.push(
+          //                             context,
+          //                             MaterialPageRoute(
+          //                               builder: (context) => TopUpPage(),
+          //                             ),
+          //                           ).then((_) => _loadUserData());
+          //                         },
+          //                         style: OutlinedButton.styleFrom(
+          //                           padding: const EdgeInsets.symmetric(
+          //                             vertical: 12,
+          //                           ),
+          //                           shape: RoundedRectangleBorder(
+          //                             borderRadius: BorderRadius.circular(10),
+          //                           ),
+          //                           side: BorderSide(
+          //                             color: const Color.fromARGB(255, 0, 0, 0),
+          //                           ),
+          //                         ),
+          //                         child: const Text(
+          //                           'Top Up',
+          //                           style: TextStyle(
+          //                             color: Color.fromARGB(255, 0, 0, 0),
+          //                             // fontWeight: FontWeight.bold,
+          //                           ),
+          //                         ),
+          //                       ),
+          //                     ),
+          //                     const SizedBox(width: 10),
+          //                     Expanded(
+          //                       child: ElevatedButton(
+          //                         onPressed: () => Navigator.pop(context),
+          //                         style: ElevatedButton.styleFrom(
+          //                           backgroundColor: const Color.fromARGB(
+          //                             255,
+          //                             253,
+          //                             31,
+          //                             31,
+          //                           ),
+          //                           padding: const EdgeInsets.symmetric(
+          //                             vertical: 12,
+          //                           ),
+          //                           shape: RoundedRectangleBorder(
+          //                             borderRadius: BorderRadius.circular(10),
+          //                           ),
+          //                         ),
+          //                         child: const Text(
+          //                           'Close',
+          //                           style: TextStyle(
+          //                             color: Colors.white,
+          //                             fontWeight: FontWeight.bold,
+          //                           ),
+          //                         ),
+          //                       ),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //     );
+          //   },
+          // ),
           IconButton(
-            icon: Icon(Icons.account_balance_wallet),
+            icon: Icon(Icons.account_balance_wallet, color: Colors.blue[800]),
             onPressed: () {
               showDialog(
                 context: context,
                 builder:
                     (context) => AlertDialog(
-                      title: Text('Credit Info'),
-                      content: Text('Current Credit: $_credit'),
+                      title: Row(
+                        children: [
+                          Icon(
+                            Icons.account_balance_wallet,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'Wallet Information',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // User Information Section
+                          ListTile(
+                            leading: CircleAvatar(
+                              radius: 15,
+                              backgroundImage: NetworkImage(
+                                'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
+                              ),
+                            ),
+                            title: Text(
+                              _username,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text('Account Balance'),
+                          ),
+
+                          Divider(),
+
+                          // Balance Information
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Current Credits:',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                Text(
+                                  '$_credit',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Top Up Options
+                          SizedBox(height: 16),
+                        ],
+                      ),
                       actions: [
                         TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            'Close',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        SizedBox(width: 40),
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
                             Navigator.push(
@@ -130,17 +344,17 @@ class _MainMenuPageState extends State<MainMenuPage> {
                               ),
                             ).then((_) => _loadUserData());
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(179, 205, 194, 255),
+                          ),
                           child: Text('Top Up'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text('Close'),
                         ),
                       ],
                     ),
               );
             },
           ),
+
           IconButton(icon: Icon(Icons.logout), onPressed: _logout),
         ],
       ),
@@ -171,21 +385,15 @@ class _MainMenuPageState extends State<MainMenuPage> {
   Widget _getPage(int index) {
     switch (index) {
       case 0:
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GachaPage()),
-                  ).then((_) => _loadUserData());
-                },
-                child: Text('Gacha (3000 Credit)'),
-              ),
-            ],
-          ),
+        return HomeMenu(
+          onGachaPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GachaPage()),
+            ).then((_) => _loadUserData());
+          },
+          username: _username,
+          credit: _credit,
         );
       case 1:
         return CollectionPage();

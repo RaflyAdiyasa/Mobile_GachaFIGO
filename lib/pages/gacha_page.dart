@@ -62,8 +62,8 @@ class _GachaPageState extends State<GachaPage> {
         return;
       }
 
-      if (user.credit < 3000) {
-        _showToast("Not enough credit (Need 3000)");
+      if (user.credit < 150) {
+        _showToast("Not enough credit (Need 150)");
         return;
       }
 
@@ -126,7 +126,7 @@ class _GachaPageState extends State<GachaPage> {
         id: user.id,
         username: user.username,
         password: user.password,
-        credit: user.credit - 3000,
+        credit: user.credit - 150,
         collection: List<String>.from(
           user.collection,
         ), // Buat copy yang mutable
@@ -139,7 +139,7 @@ class _GachaPageState extends State<GachaPage> {
       );
       if (userIndex != -1) {
         await usersBox.putAt(userIndex, updatedUser);
-        _showToast("Got ${newCard.name}! (-3000 credit)");
+        _showToast("Got ${newCard.name}! (-150 credit)");
         _showCardPopup(newCard);
       }
     } catch (e) {
@@ -247,7 +247,7 @@ class _GachaPageState extends State<GachaPage> {
                           Icon(Icons.auto_awesome, size: 20),
                           SizedBox(width: 8),
                           Text(
-                            'PULL GACHA (3000)',
+                            'PULL GACHA (150)',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

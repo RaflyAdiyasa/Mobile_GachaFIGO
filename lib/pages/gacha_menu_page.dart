@@ -81,20 +81,46 @@ class HomeMenu extends StatelessWidget {
   }
 
   Widget _buildGachaButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onGachaPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red[400],
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 5,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFD700), Color(0xFFFFA500), Color(0xFFFFD700)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.yellow.withOpacity(0.6),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
-      child: const Text(
-        'GACHA NOW (150 Credit)',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+      child: ElevatedButton(
+        onPressed: onGachaPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
+          'GACHA NOW !!',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                blurRadius: 10,
+                color: Colors.orangeAccent,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
         ),
       ),
     );

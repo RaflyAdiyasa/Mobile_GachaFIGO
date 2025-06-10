@@ -20,6 +20,9 @@ class GachaPage extends StatefulWidget {
 class _GachaPageState extends State<GachaPage> {
   bool _isLoading = false;
   bool _isLoading10x = false;
+  String _username = '';
+  int _credit = 0;
+
   // card_1s , card_2s, card_3s, card_4s, card_5s
   final List<String> _card1s = card_1s; // 1★ cards
   final List<String> _card2s = card_2s; // 2★ cards
@@ -28,6 +31,32 @@ class _GachaPageState extends State<GachaPage> {
   final List<String> _card5s = card_5s; // 5★ cards
   final Color _primaryColor = Color.fromARGB(179, 205, 194, 255);
   final Color _buttonColor = Color.fromARGB(255, 142, 175, 226);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserId = prefs.getString('currentUserId');
+
+    if (currentUserId != null) {
+      final usersBox = Hive.box<User>('users');
+      final user = usersBox.values.firstWhere(
+        (user) => user.id == currentUserId,
+        orElse: () => User(id: '', username: '', password: ''),
+      );
+
+      if (user.id.isNotEmpty) {
+        setState(() {
+          _username = user.username;
+          _credit = user.credit;
+        });
+      }
+    }
+  }
 
   void _showToast(String message) {
     Fluttertoast.showToast(
@@ -120,6 +149,11 @@ class _GachaPageState extends State<GachaPage> {
     if (userIndex != -1) {
       await usersBox.putAt(userIndex, updatedUser);
     }
+
+    // Update local state
+    setState(() {
+      _credit = updatedUser.credit;
+    });
   }
 
   Future<void> _performGacha() async {
@@ -564,6 +598,108 @@ class _GachaPageState extends State<GachaPage> {
             ),
           ),
           iconTheme: IconThemeData(color: Colors.white),
+          actions: [
+            // Wallet Button - showing user balance
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.account_balance_wallet, color: Colors.white),
+                    SizedBox(width: 4),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '$_credit',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: Row(
+                            children: [
+                              Icon(
+                                Icons.account_balance_wallet,
+                                color: Colors.blue,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Wallet Information',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ],
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                leading: CircleAvatar(
+                                  radius: 15,
+                                  backgroundImage: NetworkImage(
+                                    'https://static.atlasacademy.io/NA/CharaGraph/9400030/9400030a.png',
+                                  ),
+                                ),
+                                title: Text(
+                                  _username,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text('Account Balance'),
+                              ),
+                              Divider(),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Current Credits:',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Text(
+                                      '$_credit',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green[700],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                'Close',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          ],
+                        ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
       body: Center(
@@ -625,7 +761,10 @@ class _GachaPageState extends State<GachaPage> {
                                 ],
                               ),
                               child: ElevatedButton(
-                                onPressed: _isLoading ? null : _performGacha,
+                                onPressed:
+                                    (_isLoading || _credit < 150)
+                                        ? null
+                                        : _performGacha,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
@@ -647,20 +786,44 @@ class _GachaPageState extends State<GachaPage> {
                                             color: Colors.white,
                                           ),
                                         )
-                                        : Row(
+                                        : Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(
-                                              Icons.auto_awesome,
-                                              size: 16,
-                                              color: Colors.black87,
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.auto_awesome,
+                                                  size: 16,
+                                                  color:
+                                                      (_credit < 150)
+                                                          ? Colors.grey
+                                                          : Colors.black87,
+                                                ),
+                                                SizedBox(width: 6),
+                                                Text(
+                                                  'GACHA 1x',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        (_credit < 150)
+                                                            ? Colors.grey
+                                                            : Colors.black87,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(width: 6),
+                                            SizedBox(height: 2),
                                             Text(
-                                              'GACHA  1x',
+                                              '150 Credits',
                                               style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black87,
+                                                fontSize: 10,
+                                                color:
+                                                    (_credit < 150)
+                                                        ? Colors.red
+                                                        : Colors.black54,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                           ],
@@ -693,7 +856,9 @@ class _GachaPageState extends State<GachaPage> {
                               ),
                               child: ElevatedButton(
                                 onPressed:
-                                    _isLoading10x ? null : _perform10xGacha,
+                                    (_isLoading10x || _credit < 1500)
+                                        ? null
+                                        : _perform10xGacha,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
@@ -715,20 +880,44 @@ class _GachaPageState extends State<GachaPage> {
                                             color: Colors.white,
                                           ),
                                         )
-                                        : Row(
+                                        : Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(
-                                              Icons.auto_awesome_mosaic,
-                                              size: 16,
-                                              color: Colors.black87,
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.auto_awesome_mosaic,
+                                                  size: 16,
+                                                  color:
+                                                      (_credit < 1500)
+                                                          ? Colors.grey
+                                                          : Colors.black87,
+                                                ),
+                                                SizedBox(width: 6),
+                                                Text(
+                                                  'GACHA 10x',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        (_credit < 1500)
+                                                            ? Colors.grey
+                                                            : Colors.black87,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(width: 6),
+                                            SizedBox(height: 2),
                                             Text(
-                                              ' GACHA 10x',
+                                              '1500 Credits',
                                               style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black87,
+                                                fontSize: 10,
+                                                color:
+                                                    (_credit < 1500)
+                                                        ? Colors.red
+                                                        : Colors.black54,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                           ],

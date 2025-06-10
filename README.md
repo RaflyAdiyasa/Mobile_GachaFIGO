@@ -1,16 +1,12 @@
 # gachafigo
 
-A new Flutter project.
+Aplikasi Gacha , tiruan dari game FGO , gacha sepuasnya dengan menghamburkan credit score . Rate Gacha AMPAS btw
 
-## Getting Started
+## Para Pekerja :
 
-This project is a starting point for a Flutter application.
+### Rafly Adiyasa Putra
+NIM : 123220106
 
-A few resources to get you started if this is your first Flutter project:
+### Muhamad Tsani Putra Tronchet
+NIM : 123220115
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
